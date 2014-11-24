@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+import time
 ''' 
 PrisonerDilemma.py allows hard-coding different strategies
 for the Iterative Prisoners Dilemma, the canonical game of game-theory.
@@ -124,12 +124,26 @@ def get_action(player, history, opponent_history, score, opponent_score, getting
     ######
     ######
     #
-    #This example player always betrays.      
+    # Nate and Frasier  
     elif player == 1:
-        if getting_team_name:
-            return 'backstabber'
-        else:
+        if len(opponent_history) == 0:
             return 'b'
+        if getting_team_name:
+            return 'Nate & Frasier'
+        likelihood = 0
+        for x in opponent_history:
+            #determine likelihood that the opponent will betray
+            if x == 'b':
+                likelihood += 1
+        #divide the likelihood variable by the number of elements in their list (average)
+        likelihood = likelihood / len(opponent_history)
+        if likelihood == 1:
+            return 'b' #opponent always betrays, betrayal is the best option
+        elif likelihood == 0:
+            return 'b' #opponent is a trusting idiot...
+        else:
+            return 'c'
+                
 
 
 
@@ -149,25 +163,10 @@ def get_action(player, history, opponent_history, score, opponent_score, getting
         else:
             if len(opponent_history)==0: #It's the first round: collude
                 return 'c'
-            elif history[-1]=='c' and opponent_history[-1]=='b':
+            elif history[-1]=='c' and opponent_history[-1] == 'b':
                 return 'b' # betray if they were severely punished last time
             else:
                 return 'c' #otherwise collude
-
-
-    
-    
-    
-    
-    # EACH STUDENT TEAM CAN CHANGE ONE OF THESE elif SEGMENTS OF CODE.
-
-
-
-
-
-
-
-
 
 
     ######
@@ -181,7 +180,7 @@ def get_action(player, history, opponent_history, score, opponent_score, getting
             # to compute your strategy
             if len(opponent_history)==0: #It's the first round: collude
                 return 'c'
-            elif history[-1]=='c' and opponent_history[-1]=='b':
+            elif history[-1]=='c' and opponent_history[-1] == 'b':
                 return 'b' # betray is they were severely punished last time
             else:
                 return 'c' #otherwise collude
@@ -603,13 +602,14 @@ def play_tournament(num_players):
              
     # each element will become a column for each player
     # range is just to get list of correct size
-    result_table=range(num_players)     
-    moves_table=range(num_players) 
+    result_table = range(num_players)     
+    moves_table = range(num_players) 
     
     
     for player1 in range(num_players):  
         # create the column for each player
         # range just to get list of correct size
+        
         result_table[player1]=range(num_players) 
         result_table[player1][player1]=0 # initialize unused diagonal to 0
         moves_table[player1]=range(num_players)
@@ -631,7 +631,7 @@ def play_tournament(num_players):
             #accumulate the results for the two players
             scores[player1] += score1*1.0/len(moves1)#ends up same as column sum
             scores[player2] += score2*1.0/len(moves2)#ends up same as column sum
-     
+    
     '''report round-level results in a data file'''
     use_datafile=True
     if use_datafile:
@@ -647,14 +647,11 @@ def play_tournament(num_players):
             for player2 in range(player1):
                 # store the results in the file
                 #title by team numbers
-                results.write('team ' + str(player1) + 
-                              ' vs. ' + 'team ' + str(player2) +'\n')
+                results.write('team ' + str(player1) + ' vs. ' + 'team ' + str(player2) +'\n')
                 #title by player-on-player average score
-                results.write(str(result_table[player1][player2]) + 
-                              ' vs. ' + str(result_table[player2][player1])+'\n')
+                results.write(str(result_table[player1][player2]) + ' vs. ' + str(result_table[player2][player1])+'\n')
                 #title by team names
-                results.write(team_names[player1] + 
-                             ' vs. ' + team_names[player2] + '\n')
+                results.write(team_names[player1] + ' vs. ' + team_names[player2] + '\n')
                 #show the moves, aligned vertically
                 results.write(moves_table[player1][player2] +'\n')
                 results.write(moves_table[player2][player1] +'\n')
