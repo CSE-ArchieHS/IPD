@@ -138,17 +138,13 @@ def get_action(player, history, opponent_history, score, opponent_score, getting
 
 
 
-    ######
-    ######
-    #   
-    #This example player is silent at first and then 
-    #only betrays if they were a sucker last round.
+    
     elif player == 2:
         if getting_team_name:
-            return 'loyal vengeful'
+            return 'Psychic Grass Eating Donkies'
         else:
             if len(opponent_history)==0: #It's the first round: collude
-                return 'c'
+                return 'b'
             elif history[-1]=='c' and opponent_history[-1]=='b':
                 return 'b' # betray if they were severely punished last time
             else:
